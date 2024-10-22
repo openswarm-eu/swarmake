@@ -1,51 +1,55 @@
 
-[project.dotbot]
+[projects.dotbot]
 repo = "DotBot-firmware" # if the project name is different from the repo name
-build = "BUILD_TARGET=dotbot-v2 BUILD_CONFIG=Debug make docker"
+build = "BUILD_TARGET=dotbot-v2 BUILD_CONFIG=Debug DOCKER_TARGETS=03app_dotbot make docker"
+list-outputs = "ls -l projects/03app_dotbot/Output/dotbot-v2/Debug/Exe"
 
-[project.aiot-play-fw] # dashes automatically converted to underscores if needed to match the project name
+[projects.aiot_play_fw]
 build = "BUILD_CONFIG=Debug make docker"
 
-[project.lakers]
+[projects.lakers]
 setup = """
-# add stuff here (bash commands)
+echo test setup
 """
 build = "cargo build"
 run = "cargo run --bin coapserver"
+list-outputs = "ls -l target/debug"
 
-[project.Atlas]
+[projects.Atlas]
 build = '''
 pip install -r requirements.txt
 python RunSim.py
 '''
 
-[_base]
+[_swarmake]
+openswarm-url = "https://github.com/openswarm-eu"
 repositories = [
-    "https://github.com/openswarm-eu/lakers",
-    "https://github.com/openswarm-eu/happyserial",
-    "https://github.com/openswarm-eu/Atlas",
-    "https://github.com/openswarm-eu/aiot_play_fw",
-    "https://github.com/openswarm-eu/aiot_gateway",
-    "https://github.com/openswarm-eu/aiot_play_pcb",
-    "https://github.com/openswarm-eu/microbit",
-    "https://github.com/openswarm-eu/DotBot-firmware",
-    "https://github.com/openswarm-eu/PyDotBot",
-    "https://github.com/openswarm-eu/qrkey",
-    "https://github.com/openswarm-eu/alvarado23lighthouse",
-    "https://github.com/openswarm-eu/dotbot-authority",
-    "https://github.com/openswarm-eu/DotBot-hardware",
-    "https://github.com/openswarm-eu/draft-song-lake-ra",
-    "https://github.com/openswarm-eu/draft-lopez-lake-edhoc-psk",
-    "https://github.com/openswarm-eu/swarm-energy-replenishment",
-    "https://github.com/openswarm-eu/minimal-length-swarm-networks",
-    "https://github.com/openswarm-eu/multi-human-swarm-control",
-    "https://github.com/openswarm-eu/Kasena",
-    "https://github.com/openswarm-eu/.github",
-    "https://github.com/openswarm-eu/dda",
-    "https://github.com/openswarm-eu/aiot_play_fw_zephyr",
-    "https://github.com/openswarm-eu/freebot-gatt-control",
-    "https://github.com/openswarm-eu/freebot-example",
-    "https://github.com/openswarm-eu/ARK-including-design-and-compilation",
-    "https://github.com/openswarm-eu/ICRA2025_BatteryFreeRobot",
-    "https://github.com/openswarm-eu/swarmit",
+    "lakers",
+    "happyserial",
+    "Atlas",
+    "aiot_play_fw",
+    "aiot_gateway",
+    "aiot_play_pcb",
+    "microbit",
+    "DotBot-firmware",
+    "PyDotBot",
+    "qrkey",
+    "alvarado23lighthouse",
+    "dotbot-authority",
+    "DotBot-hardware",
+    "draft-song-lake-ra",
+    "draft-lopez-lake-edhoc-psk",
+    "swarm-energy-replenishment",
+    "minimal-length-swarm-networks",
+    "multi-human-swarm-control",
+    "Kasena",
+    ".github",
+    "dda",
+    "aiot_play_fw_zephyr",
+    "freebot-gatt-control",
+    "freebot-example",
+    "ARK-including-design-and-compilation",
+    "ICRA2025_BatteryFreeRobot",
+    "swarmit",
 ]
+build-dir = "build"
