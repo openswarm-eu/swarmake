@@ -9,6 +9,7 @@ import logging
 import logging.config
 
 import structlog
+import os
 
 LOG_LEVEL_MAP = {
     "debug": logging.DEBUG,
@@ -56,7 +57,7 @@ def setup_logging(filename, level, handlers):
             if filename is None:
                 continue
             else:
-                value["filename"] = filename
+                value["filename"] = os.path.abspath(filename)
         stdlib_handlers.update({handler: value})
 
     stdlib_config = {
