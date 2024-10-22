@@ -90,7 +90,7 @@ def clean_build_dir():
 @click.pass_context
 def main(ctx):
     log_level = "info"
-    passed_level = os.environ.get("PYTHON_LOG").lower()
+    passed_level = os.environ.get("PYTHON_LOG", "").lower()
     if passed_level in ["debug", "info", "warning", "error"]:
         log_level = passed_level
     setup_logging("swarmake.log", log_level, ["console", "file"])

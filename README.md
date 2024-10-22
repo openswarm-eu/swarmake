@@ -1,15 +1,25 @@
 # OpenSwarm implementation
 
-It will work like this:
+Fetch, build, and run the OpenSwarm.
+
+## Examples
+The Atlas simulation project:
 ```bash
-# there is a default file with baseline configs, including repo urls: _base.toml
+swarmake build atlas # clone the atlas repo and build it using the recipe defined in _base.toml
+swarmake run atlas # run it using the recibe in _base.toml
+```
 
-# build firmware images for dotbots, according to build, flash, or run sections in config file
-swarmake dotbot build
+The DotBot firmware:
+```bash
+# clone the dotbot repo and build it in Docker, using the recipe defined in _base.toml
+swarmake build dotbot
+```
 
-swarmake lakers build
-
-swarmake freebot build
-
-swarmake minimal-length-swarm-networks build
+The Lakers library
+```bash
+# clone the lakers repo and build it using the recipe defined in _base.toml
+# when stderr is redirected, we suppress stdout too and just show a "loading" line
+swarmake build lakers 2> /dev/null
+# run according to _base.toml
+swarmake run lakers
 ```

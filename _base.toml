@@ -15,38 +15,37 @@ build = "cargo build"
 run = "cargo run --bin coapserver"
 list-outputs = "ls -l target/debug"
 
-[projects.Atlas]
-build = '''
-pip install -r requirements.txt
-python RunSim.py
-'''
+[projects.atlas]
+repo = "Atlas"
+setup = "pip install -r requirements.txt"
+run = "python RunSim.py"
 
 [_swarmake]
 openswarm-url = "https://github.com/openswarm-eu"
 repositories = [
-    "lakers",
-    "happyserial",
-    "Atlas",
-    "aiot_play_fw",
-    "aiot_gateway",
-    "aiot_play_pcb",
-    "microbit",
-    "DotBot-firmware",
-    "PyDotBot",
-    "qrkey",
-    "alvarado23lighthouse",
-    "dotbot-authority",
-    "DotBot-hardware",
-    "draft-song-lake-ra",
-    "draft-lopez-lake-edhoc-psk",
-    "swarm-energy-replenishment",
-    "minimal-length-swarm-networks",
-    "multi-human-swarm-control",
-    "Kasena",
-    ".github",
-    "dda",
-    "aiot_play_fw_zephyr",
-    "freebot-gatt-control",
+    "lakers", # ok, rust
+    "happyserial", # how to build?
+    "Atlas", # ok, python
+    "aiot_play_fw", # ok, c, build in docker
+    "aiot_gateway", # not straightforward to build (many moving parts and connections)
+    "aiot_play_pcb", # not code (hardware)
+    "microbit", # how to build?
+    "DotBot-firmware", # ok, c, build in docker
+    "PyDotBot", # should be ok, python
+    "qrkey", # should be ok, python
+    "alvarado23lighthouse", # should be ok, python
+    "dotbot-authority", # should be ok, python
+    "DotBot-hardware", # not code (hardware)
+    "draft-song-lake-ra", # not code (ietf draft)
+    "draft-lopez-lake-edhoc-psk", # not code (ietf draft)
+    "swarm-energy-replenishment", # should be ok, python, cmake, argos
+    "minimal-length-swarm-networks", # should be ok, python, cmake, argos
+    "multi-human-swarm-control", # should be ok, python, cmake, argos, docker
+    "Kasena", # just a jupyter notebook
+    ".github", # not code (github metadata)
+    "dda", # should be ok, go, docker
+    "aiot_play_fw_zephyr", # not straightforward to build (many moving parts and connections)
+    "freebot-gatt-control", # should be ok, rust
     "freebot-example",
     "ARK-including-design-and-compilation",
     "ICRA2025_BatteryFreeRobot",
