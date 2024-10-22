@@ -16,10 +16,10 @@ from itertools import cycle
 import time
 
 # import log
-from openswarm.logger import setup_logging, LOGGER
+from swarmake.logger import setup_logging, LOGGER
 logging = LOGGER.bind(context=__name__)
 
-from openswarm.run_cmd import execute_command
+from swarmake.run_cmd import execute_command
 
 # Load _base.toml configuration
 BASE_CONFIG_FILE = "_base.toml"

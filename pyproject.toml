@@ -12,7 +12,7 @@ exclude = [
 ]
 
 [project]
-name = "openswarm"
+name = "swarmake"
 version = "0.1.0"
 authors = [
     { name="Geovane Fedrecheski", email="geovane.fedrecheski@inria.fr" },
@@ -41,7 +41,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/openswarm-eu/openswarm/issues"
 
 [project.scripts]
-openswarm = "openswarm.main:main"
+swarmake = "swarmake.main:main"
 
 [tool.ruff]
 select = ["E", "F"]

@@ -6,7 +6,7 @@ from datetime import datetime
 from itertools import cycle
 
 # import log
-from openswarm.logger import setup_logging, LOGGER
+from swarmake.logger import setup_logging, LOGGER
 logging = LOGGER.bind(context=__name__)  # Bind initial context (__name__)
 
 def execute_command(command, project_name):
