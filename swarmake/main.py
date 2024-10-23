@@ -21,9 +21,9 @@ logging = LOGGER.bind(context=__name__)
 
 from swarmake.run_cmd import execute_command
 
-# Load _base.toml configuration
-BASE_CONFIG_FILE = "_base.toml"
-config = toml.load(BASE_CONFIG_FILE)
+# Load swarmake.toml configuration
+BASE_CONFIG_FILE = "swarmake.toml"
+config = {}
 
 console = Console()
 
@@ -38,11 +38,11 @@ class ProjectConfig:
 
     @property
     def build_dir(self):
-        return f"{config['_swarmake']['build-dir']}/{self.name}"
+        return f"{config['_core']['build-dir']}/{self.name}"
 
     @property
     def url(self):
-        return f"{config['_swarmake']['openswarm-url']}/{self.repo_name}"
+        return f"{config['_core']['openswarm-url']}/{self.repo_name}"
 
 def load_project_config(project_name):
     logging.debug(f"Loading project configuration", project_name=project_name)
@@ -54,7 +54,7 @@ def load_project_config(project_name):
 
     repo_name = project_data.get("repo", project_name)  # If repo name is not explicitly defined, use project name
     # make sure repo_name is in the list of repositories
-    if repo_name not in config["_swarmake"]["repositories"]:
+    if repo_name not in config["_core"]["repositories"]:
         raise ValueError(f"Repository '{repo_name}' not found in configuration.")
 
     build_cmd = project_data.get("build", "")
@@ -80,7 +80,7 @@ def clone_repository(url, destination):
 
 def clean_build_dir(project_name=None):
     """Clean the build directory for the specified project."""
-    build_dir = f"{config['_swarmake']['build-dir']}"
+    build_dir = f"{config['_core']['build-dir']}"
     if project_name:
         build_dir = f"{build_dir}/{project_name}"
         logging.info(f"Cleaning build directory for project", project_name=project_name, build_dir=build_dir)
@@ -95,6 +95,9 @@ def clean_build_dir(project_name=None):
 @click.group()
 @click.pass_context
 def main(ctx):
+    global config
+    config = toml.load(BASE_CONFIG_FILE)
+
     log_level = "info"
     passed_level = os.environ.get("PYTHON_LOG", "").lower()
     if passed_level in ["debug", "info", "warning", "error"]:
@@ -117,7 +120,7 @@ def build(project_name, clean_build_first):
     project = load_project_config(project_name)
 
     # Clone the repository if necessary
-    clone_repository(project.url, f"{config['_swarmake']['build-dir']}/{project.name}")
+    clone_repository(project.url, f"{config['_core']['build-dir']}/{project.name}")
 
     # Execute the setup and build commands
     os.chdir(project.build_dir)
@@ -140,7 +143,7 @@ def run(project_name, clean_build_first):
     project = load_project_config(project_name)
 
     # check if the project is cloned / built
-    if not os.path.exists(f"{config['_swarmake']['build-dir']}/{project.name}"):
+    if not os.path.exists(f"{config['_core']['build-dir']}/{project.name}"):
         raise ValueError(f"Project {project.name} has not been built. Please run 'swarmake build {project.name}' first.")
     
     # Execute the run command
@@ -166,7 +169,7 @@ def list():
             logging.warning(e)
     configured_project_names = '\n\t'.join([p.name for p in configured_projects])
     logging.info(f"Found {len(configured_projects)} configured projects:\n\n\t{configured_project_names}\n\n")
-    all_repos = config["_swarmake"]["repositories"]
+    all_repos = config["_core"]["repositories"]
     unconfigured_projects = set(all_repos) - set([p.repo_name for p in configured_projects])
     unconfigured_project_names = '\n\t'.join(unconfigured_projects)
     logging.info(f"Found {len(unconfigured_projects)} unconfigured projects:\n\n\t{unconfigured_project_names}\n\n")

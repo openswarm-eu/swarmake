@@ -95,7 +95,7 @@ setup = """
 """
 run = "cd controller && cargo run"
 
-[_swarmake]
+[_core]
 openswarm-url = "https://github.com/openswarm-eu"
 repositories = [
     # able to build and run
