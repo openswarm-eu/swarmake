@@ -6,10 +6,24 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 include = [
-    "*.py"
+    "swarmake/*.py",
+    "swarmake/swarmake.toml",
 ]
-exclude = [
+exclude = [ "*.pyc" ]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "swarmake/*.py",
+    "swarmake/swarmake.toml"
 ]
+exclude = [ "*.pyc" ]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "swarmake/*.py",
+    "swarmake/swarmake.toml"
+]
+exclude = [ "*.pyc" ]
 
 [project]
 name = "swarmake"

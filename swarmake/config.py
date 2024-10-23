@@ -1,8 +1,15 @@
 from dataclasses import dataclass, field
 from typing import List, Dict
+import importlib.resources as pkg_resources
 import toml
+import os
 
 SWARMAKE_CONFIG_FILE = "swarmake.toml"
+if not os.path.exists(SWARMAKE_CONFIG_FILE):
+    # if the file is not found in the current directory, use the default one from the installed package
+    SWARMAKE_CONFIG_FILE = str(pkg_resources.files("swarmake").joinpath("swarmake.toml"))
+
+# global configuration object
 config = None
 
 @dataclass
