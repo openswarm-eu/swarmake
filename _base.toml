@@ -4,6 +4,37 @@ repo = "DotBot-firmware" # if the project name is different from the repo name
 build = "BUILD_TARGET=dotbot-v2 BUILD_CONFIG=Debug DOCKER_TARGETS=03app_dotbot make docker"
 list-outputs = "ls -l projects/03app_dotbot/Output/dotbot-v2/Debug/Exe"
 
+[projects.pydotbot]
+repo = "PyDotBot"
+# note actually installing from pypi
+setup = """
+python3 -m venv .venv
+source .venv/bin/activate
+pip install pydotbot
+"""
+# note hardcoded parameters log level and serial port
+run = """
+source .venv/bin/activate
+dotbot-controller --log-level debug -p /dev/ttyACM0
+"""
+
+[projects.qrkey]
+# note actually installing from pypi
+setup = """
+python3 -m venv .venv
+source .venv/bin/activate
+pip install qrkey
+"""
+
+[projects.swarmit]
+# note actually installing from pypi
+setup = """
+python3 -m venv .venv
+source .venv/bin/activate
+pip install swarmit
+"""
+run = "swarmit"
+
 [projects.aiot_play_fw]
 build = "BUILD_CONFIG=Debug make docker"
 
@@ -15,40 +46,95 @@ build = "cargo build"
 run = "cargo run --bin coapserver"
 list-outputs = "ls -l target/debug"
 
+[projects.dotbot-authority]
+setup = """
+# backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+# frontend
+cd dotbot_authority/frontend
+npm install
+npm run build
+cd ..
+"""
+run = """
+source .venv/bin/activate
+python3 dotbot_authority/main.py
+"""
+
 [projects.atlas]
 repo = "Atlas"
 setup = "pip install -r requirements.txt"
 run = "python RunSim.py"
 
+[projects.human-swarm]
+repo = "multi-human-swarm-control"
+setup = """
+docker pull genki15/multi-human-swarm-control
+mkdir results
+"""
+# note: parameters $condition and $order are hardcoded
+run = """
+docker run \
+  -it --network="host" \
+  -v $(pwd)/results:/home/docker/multi-human-swarm-control/results \
+  -w /home/docker/multi-human-swarm-control genki15/multi-human-swarm-control \
+  python3 src/web_app/app.py -m indirect -o 1
+"""
+
+[projects.dda]
+setup = "docker pull ghcr.io/coatyio/dda:latest"
+run = "docker run --rm -p 8800:8800 -p 8900:8900 -v $(pwd):/dda ghcr.io/coatyio/dda:latest"
+
+[projects.freebot-gatt]
+repo = "freebot-gatt-control"
+setup = """
+# sudo apt install libdbus-1-dev pkg-config
+# when running, press ESC to exit
+"""
+run = "cd controller && cargo run"
+
 [_swarmake]
 openswarm-url = "https://github.com/openswarm-eu"
 repositories = [
-    "lakers", # ok, rust
-    "happyserial", # how to build?
-    "Atlas", # ok, python
-    "aiot_play_fw", # ok, c, build in docker
-    "aiot_gateway", # not straightforward to build (many moving parts and connections)
-    "aiot_play_pcb", # not code (hardware)
-    "microbit", # how to build?
-    "DotBot-firmware", # ok, c, build in docker
-    "PyDotBot", # should be ok, python
-    "qrkey", # should be ok, python
-    "alvarado23lighthouse", # should be ok, python
-    "dotbot-authority", # should be ok, python
-    "DotBot-hardware", # not code (hardware)
-    "draft-song-lake-ra", # not code (ietf draft)
-    "draft-lopez-lake-edhoc-psk", # not code (ietf draft)
-    "swarm-energy-replenishment", # should be ok, python, cmake, argos
-    "minimal-length-swarm-networks", # should be ok, python, cmake, argos
-    "multi-human-swarm-control", # should be ok, python, cmake, argos, docker
-    "Kasena", # just a jupyter notebook
-    ".github", # not code (github metadata)
-    "dda", # should be ok, go, docker
-    "aiot_play_fw_zephyr", # not straightforward to build (many moving parts and connections)
-    "freebot-gatt-control", # should be ok, rust
-    "freebot-example",
-    "ARK-including-design-and-compilation",
-    "ICRA2025_BatteryFreeRobot",
-    "swarmit",
+    # able to build and run
+    "lakers", # rust | inria
+    "Atlas", # python | inria
+    "dda", # go, docker | siemens
+    "multi-human-swarm-control", # python, cmake, argos, docker | sheffield | runs, but simulation sometimes fail to connect
+    "freebot-gatt-control", # rust | ku leuven | runs the controller
+    "dotbot-authority", # python | inria
+    "PyDotBot", # python | inria
+    "qrkey", # python | inria
+    "swarmit", # c / python (note: lacks a Dockerfile for c) | inria
+
+    # able to build only
+    "DotBot-firmware", # c, build in docker | inria
+    "aiot_play_fw", # c, build in docker | inria
+
+    # todo: should be ok to build
+    "swarm-energy-replenishment", # python, cmake, argos | sheffield
+    "minimal-length-swarm-networks", # python, cmake, argos | sheffield
+
+    # todo: how to build? / not straightforward to build
+    "happyserial", # requires Segger IDE | c, python | inria
+    "microbit", # requires Segger IDE | c | inria
+    "aiot_gateway", # many moving parts and connections | python | inria
+    "aiot_play_fw_zephyr", # many moving parts and connections | c | inria
+    "alvarado23lighthouse", # requires Segger IDE | python | inria
+
+    "freebot-example", # instructions involve an IDE | ku leuven
+    "ARK-including-design-and-compilation", # instructions inolve manually installing Qt | sheffield
+    "Nadzoru2", # no instructions on README | sheffield
+
+    "ICRA2025_BatteryFreeRobot", # software folder is empty | ku leuven
+    "aiot_play_pcb", # not code (hardware) | inria
+    "DotBot-hardware", # not code (hardware) | inria
+
+    "Kasena", # just a jupyter notebook | inria
+
+    "draft-song-lake-ra", # not code (ietf draft) | inria
+    "draft-lopez-lake-edhoc-psk", # not code (ietf draft) | inria
 ]
 build-dir = "build"
