@@ -4,14 +4,6 @@ import os
 import subprocess
 import click
 import shutil
-import toml
-# import logging
-import sys
-from dataclasses import dataclass, field
-from datetime import datetime
-from itertools import cycle
-from typing import List, Dict
-import time
 
 from swarmake.logger import setup_logging, LOGGER
 logging = LOGGER.bind(context=__name__)
@@ -116,8 +108,6 @@ def list():
     for project_name in config.projects:
         try:
             project = load_project_config(project_name)
-            # filter only _cmd attributes
-            commands = [k.replace("_cmd", "") for k, v in project.__dict__.items() if k.endswith("_cmd") and v != ""]
             configured_projects.append(project)
         except ValueError as e:
             logging.warning(e)

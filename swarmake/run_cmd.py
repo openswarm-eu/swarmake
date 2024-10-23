@@ -1,11 +1,9 @@
-# import logging
 import subprocess
 import sys
 import time
 from datetime import datetime
 from itertools import cycle
 
-# import log
 from swarmake.logger import setup_logging, LOGGER
 logging = LOGGER.bind(context=__name__)  # Bind initial context (__name__)
 
@@ -60,7 +58,7 @@ def execute_command(command, project_name, force_show_output=False):
                     logger.error(f"Command failed")
                     raise RuntimeError(f"Command failed for project {project_name}")
                 else:
-                    logger.debug(f"Command completed successfully in {elapsed_time} s")
+                    logger.debug(f"Completed ok in {elapsed_time} s")
             else:
                 # # Capture output and wait for the process to finish
                 # stdout, stderr = process.communicate()
@@ -71,7 +69,7 @@ def execute_command(command, project_name, force_show_output=False):
                     raise RuntimeError(f"Command failed for project {project_name}")
                 else:
                     sys.stdout.write(f"\r✔ Completed             \n") # extra spaces to overwrite spinner line
-                    logger.debug(f"Command completed successfully in {elapsed_time} s")
+                    logger.debug(f"Completed ok in {elapsed_time} s")
                     if force_show_output:
                         sys.stdout.write(stdout.decode())  # Output the command's stdout
 

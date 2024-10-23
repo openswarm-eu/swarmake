@@ -35,6 +35,15 @@ pip install swarmit
 """
 run = "swarmit"
 
+[projects.happyserial]
+setup = """
+cd src_python
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+cd ..
+"""
+
 [projects.aiot_play_fw]
 build = "BUILD_CONFIG=Debug make docker"
 
@@ -110,15 +119,15 @@ repositories = [
     "swarmit", # c / python (note: lacks a Dockerfile for c) | inria
 
     # able to build only
-    "DotBot-firmware", # c, build in docker | inria
-    "aiot_play_fw", # c, build in docker | inria
+    "DotBot-firmware", # c | build in docker | inria
+    "aiot_play_fw", # c | build in docker | inria
+    "happyserial", # c, python | c verions requires Segger IDE | inria
 
     # todo: should be ok to build
     "swarm-energy-replenishment", # python, cmake, argos | sheffield
     "minimal-length-swarm-networks", # python, cmake, argos | sheffield
 
-    # todo: how to build? / not straightforward to build
-    "happyserial", # requires Segger IDE | c, python | inria
+    # todo: how to build? / not straightforward to build in the cli
     "microbit", # requires Segger IDE | c | inria
     "aiot_gateway", # many moving parts and connections | python | inria
     "aiot_play_fw_zephyr", # many moving parts and connections | c | inria
@@ -128,13 +137,14 @@ repositories = [
     "ARK-including-design-and-compilation", # instructions inolve manually installing Qt | sheffield
     "Nadzoru2", # no instructions on README | sheffield
 
-    "ICRA2025_BatteryFreeRobot", # software folder is empty | ku leuven
-    "aiot_play_pcb", # not code (hardware) | inria
-    "DotBot-hardware", # not code (hardware) | inria
+    # # repositories below either do not contain code or are not "buildable" (e.g. jupyter notebooks)
+    # "ICRA2025_BatteryFreeRobot", # software folder is empty | ku leuven
+    # "aiot_play_pcb", # not code (hardware) | inria
+    # "DotBot-hardware", # not code (hardware) | inria
 
-    "Kasena", # just a jupyter notebook | inria
+    # "Kasena", # just a jupyter notebook | inria
 
-    "draft-song-lake-ra", # not code (ietf draft) | inria
-    "draft-lopez-lake-edhoc-psk", # not code (ietf draft) | inria
+    # "draft-song-lake-ra", # not code (ietf draft) | inria
+    # "draft-lopez-lake-edhoc-psk", # not code (ietf draft) | inria
 ]
 build-dir = "build"
