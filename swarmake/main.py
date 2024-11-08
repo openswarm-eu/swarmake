@@ -8,7 +8,7 @@ import shutil
 from swarmake.logger import setup_logging, LOGGER
 logging = LOGGER.bind(context=__name__)
 
-from swarmake.run_cmd import execute_command
+from swarmake.cmd import execute_command
 from swarmake.config import config
 
 def load_project_config(project_name):

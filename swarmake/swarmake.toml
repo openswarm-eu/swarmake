@@ -48,9 +48,6 @@ cd ..
 build = "BUILD_CONFIG=Debug make docker"
 
 [projects.lakers]
-setup = """
-echo 'test lakers setup'
-"""
 build = "cargo build"
 run = "cargo run --bin coapserver"
 list-outputs = "ls -l target/debug"
