@@ -1,0 +1,56 @@
+name: CI Workflow
+
+on:
+  push:
+    branches: [main]
+    tags: 'v*'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  happyserial:
+    name: Install happyserial
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .  # Install swarmake package
+
+      - name: Install happyserial
+        run: |
+          swarmake build happyserial
+
+  aiot_play_fw:
+    name: Build aiot_play_fw
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .  # Install swarmake package
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build aiot_play_fw
+        run: |
+          BUILD_CONFIG=Debug swarmake build aiot_play_fw
