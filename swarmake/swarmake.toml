@@ -1,8 +1,14 @@
 
 [projects.dotbot]
 repo = "DotBot-firmware" # if the project name is different from the repo name
-build = "BUILD_TARGET=dotbot-v2 BUILD_CONFIG=Debug DOCKER_TARGETS=03app_dotbot make docker"
-list-outputs = "ls -l projects/03app_dotbot/Output/dotbot-v2/Debug/Exe"
+build = """
+BUILD_TARGET=dotbot-v2 BUILD_CONFIG=Debug DOCKER_TARGETS="swarmit_move swarmit_motors" make docker
+# BUILD_TARGET=dotbot-v2 BUILD_CONFIG=Debug DOCKER_TARGETS="swarmit_move" make docker
+"""
+list-outputs = """
+ls -l swarmit/move/Output/dotbot-v2/Debug/Exe
+ls -l swarmit/motors/Output/dotbot-v2/Debug/Exe
+"""
 
 [projects.pydotbot]
 repo = "PyDotBot"

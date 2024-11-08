@@ -4,11 +4,12 @@ import os
 import subprocess
 import click
 import shutil
+import time
 
 from swarmake.logger import setup_logging, LOGGER
 logging = LOGGER.bind(context=__name__)
 
-from swarmake.cmd import execute_command
+from swarmake import cmd
 from swarmake.config import config
 
 def load_project_config(project_name):
@@ -51,10 +52,8 @@ def main(ctx):
         log_level = passed_level
     setup_logging("swarmake.log", log_level, ["console", "file"])
 
-@main.command()
-@click.option('-c', '--clean-build-first', default=False, is_flag=True, help="Clean the build directory before building")
-@click.argument("project_name")
-def build(project_name, clean_build_first):
+
+def build(project_name, clean_build_first, is_interactive=False):
     """Build the specified project"""
 
     print("\n\n================================================================================")
@@ -74,13 +73,20 @@ def build(project_name, clean_build_first):
     try:
         if project.setup_cmd:
             logging.info(f"Running setup", project_name=project.name)
-            execute_command(project.setup_cmd, project.name)
-        execute_command(project.build_cmd, project.name)
+            cmd.execute_pretty(project.setup_cmd, project.name, is_interactive=is_interactive)
+        cmd.execute_pretty(project.build_cmd, project.name, is_interactive=is_interactive)
         if project.list_outputs_cmd:
             logging.info(f"Listing outputs", project_name=project.name)
-            execute_command(project.list_outputs_cmd, project.name, force_show_output=True)
+            cmd.execute_pretty(project.list_outputs_cmd, project.name, force_show_output=True, is_interactive=is_interactive)
     finally:
         os.chdir("..")
+
+@main.command()
+@click.option('-c', '--clean-build-first', default=False, is_flag=True, help="Clean the build directory before building")
+@click.argument("project_name")
+def build_command(project_name, clean_build_first):
+    return build(project_name, clean_build_first)
+
 
 @main.command()
 @click.option('-c', '--clean-build-first', default=False, is_flag=True, help="Clean the build directory before building")
@@ -98,11 +104,10 @@ def run(project_name, clean_build_first, args):
     os.chdir(project.build_dir)
     try:
         full_command = f"{project.run_cmd} {' '.join(args)}"
-        execute_command(full_command, project.name)
+        cmd.execute_pretty(full_command, project.name)
     finally:
         os.chdir("..")
 
-# command to list available projects
 @main.command()
 def list():
     """List available projects."""
@@ -122,10 +127,35 @@ def list():
     unconfigured_project_names = '\n\t'.join(unconfigured_projects)
     logging.info(f"Found {len(unconfigured_projects)} unconfigured projects:\n\n\t{unconfigured_project_names}\n\n")
 
-# add a dummy command
 @main.command()
-def dummy():
-    logging.info("Dummy command executed")
+@click.argument("firmware_name")
+def deploy(firmware_name):
+    """Deploy a firmware to a set of DotBots."""
+    dotbot_project = load_project_config("dotbot")
+
+    # if needed, build dotbot and swarmit projects
+    if not cmd.execute(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir):
+        build("dotbot", clean_build_first=False, is_interactive=False)
+    if not os.path.exists("build/swarmit"):
+        build("swarmit", clean_build_first=False, is_interactive=False)
+
+    # use swarmit to check the available devices
+    res, stdout, stderr = cmd.execute_and_output("swarmit status")
+    logging.info(f"Available devices:\n\n{stdout}\n\n")
+    time.sleep(1)
+
+    # deploy the firmware to the devices using swarmit
+    res = cmd.execute("swarmit stop") # make sure experiment is not running
+    time.sleep(1)
+    res = cmd.execute_pretty(f"swarmit flash -y build/dotbot/swarmit/{firmware_name}/Output/dotbot-v2/Debug/Exe/swarmit_{firmware_name}-dotbot-v2.bin")
+    time.sleep(1)
+    if not res:
+        raise RuntimeError("Failed to deploy firmware to devices")
+    res = cmd.execute("swarmit start")
+    if res:
+        logging.info("Firmware deployed and experiment started")
+    else:
+        raise RuntimeError("Failed to start the experiment")
 
 if __name__ == "__main__":
     main()

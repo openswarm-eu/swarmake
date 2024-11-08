@@ -2,6 +2,8 @@
 
 Fetch, build, and run the OpenSwarm.
 
+For help, use `swarmake [command] --help`.
+
 ## Examples
 The Atlas simulation project:
 ```bash
