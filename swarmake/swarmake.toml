@@ -27,11 +27,8 @@ pip install qrkey
 """
 
 [projects.swarmit]
-# note actually installing from pypi
 setup = """
-python3 -m venv .venv
-source .venv/bin/activate
-pip install swarmit
+pip install -e .
 """
 run = "swarmit"
 
