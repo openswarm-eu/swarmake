@@ -1,0 +1,9 @@
+[deployment]
+name = "1g2d"
+description = "Deployment with 1 gateway and 2 DotBots"
+
+[gateways]
+
+
+[dotbots]
+
