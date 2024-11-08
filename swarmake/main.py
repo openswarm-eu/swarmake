@@ -85,7 +85,8 @@ def build(project_name, clean_build_first):
 @main.command()
 @click.option('-c', '--clean-build-first', default=False, is_flag=True, help="Clean the build directory before building")
 @click.argument("project_name")
-def run(project_name, clean_build_first):
+@click.argument("args", nargs=-1, type=click.UNPROCESSED)  # capture extra args after --
+def run(project_name, clean_build_first, args):
     """Run the specified project"""
     project = load_project_config(project_name)
 
@@ -96,7 +97,8 @@ def run(project_name, clean_build_first):
     # Execute the run command
     os.chdir(project.build_dir)
     try:
-        execute_command(project.run_cmd, project.name)
+        full_command = f"{project.run_cmd} {' '.join(args)}"
+        execute_command(full_command, project.name)
     finally:
         os.chdir("..")
 
