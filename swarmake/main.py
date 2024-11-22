@@ -44,6 +44,7 @@ def clean_build_dir(project_name=None):
         logging.info(f"Build directory does not exist", build_dir=build_dir)
 
 @click.group()
+@click.version_option(package_name="swarmake", message="%(prog)s v%(version)s    Fetch, build, and run the OpenSwarm.")
 @click.pass_context
 def main(ctx):
     log_level = "info"
