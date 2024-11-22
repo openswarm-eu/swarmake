@@ -71,7 +71,7 @@ jobs:
 
     strategy:
       matrix:
-        target: [dotbot, aiot_play_fw]
+        target: [dotbot, aiot_play_fw, human-swarm, dda]
 
     steps:
       - name: Checkout code
