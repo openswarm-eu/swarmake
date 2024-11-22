@@ -21,6 +21,7 @@ class ProjectConfig:
     setup_cmd: str = ""
     run_cmd: str = ""
     list_outputs_cmd: str = ""
+    output_dir: str = ""
 
     @property
     def build_dir(self):
@@ -63,6 +64,7 @@ class SwarmakeConfig:
                 setup_cmd=project_data.get("setup", ""),
                 run_cmd=project_data.get("run", ""),
                 list_outputs_cmd=project_data.get("list-outputs", ""),
+                output_dir=project_data.get("output-dir", ""),
             )
         return cls(core=core_config, projects=projects)
 
