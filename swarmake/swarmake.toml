@@ -99,7 +99,8 @@ run = "docker run --rm -p 8800:8800 -p 8900:8900 -v $(pwd):/dda ghcr.io/coatyio/
 [projects.freebot-gatt]
 repo = "freebot-gatt-control"
 setup = """
-# sudo apt install libdbus-1-dev pkg-config
+sudo apt install libdbus-1-dev pkg-config
+cd controller && cargo build
 # when running, press ESC to exit
 """
 run = "cd controller && cargo run"

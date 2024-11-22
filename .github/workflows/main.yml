@@ -1,4 +1,4 @@
-name: CI Workflow
+name: Main Action
 
 on:
   push:
@@ -8,13 +8,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  happyserial:
-    name: Install happyserial
+  install-swarmake:
+    name: Install swarmake
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install swarmake
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .  # Install swarmake package
+
+      - name: Test swarmake
+        run: |
+          swarmake --help
+
+  build-python-based:
+    needs: install-swarmake
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [happyserial, swarmit, pydotbot, qrkey]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,17 +52,74 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .  # Install swarmake package
 
-      - name: Install happyserial
+      - name: Build ${{ matrix.target }}
         run: |
-          swarmake build happyserial
+          BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
 
-  aiot_play_fw:
-    name: Build aiot_play_fw
+  build-python-js-based:
+    needs: install-swarmake
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [dotbot-authority] # TODO: move pydotbot to this workflow
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .  # Install swarmake package
+
+      - name: Build ${{ matrix.target }}
+        run: |
+          BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
+
+  build-rust-based:
+    needs: install-swarmake
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .  # Install swarmake package
+
+      - name: Build freebot-gatt-control
+        run: |
+          BUILD_CONFIG=debug swarmake build freebot-gatt
+
+  build-docker-based:
+    needs: install-swarmake
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [dotbot, aiot_play_fw, human-swarm, dda]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -51,6 +134,6 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
 
-      - name: Build aiot_play_fw
+      - name: Build ${{ matrix.target }}
         run: |
-          BUILD_CONFIG=Debug swarmake build aiot_play_fw
+          BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
