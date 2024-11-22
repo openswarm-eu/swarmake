@@ -68,17 +68,18 @@ def do_build(project_name, clean_build_first, is_interactive=False):
     clone_repository(project.url, project.build_dir)
 
     # Execute the setup and build commands
-    os.chdir(project.build_dir)
+    # os.chdir(project.build_dir)
     try:
         if project.setup_cmd:
             logging.info(f"Running setup", project_name=project.name)
-            cmd.execute_pretty(project.setup_cmd, project.name, is_interactive=is_interactive)
-        cmd.execute_pretty(project.build_cmd, project.name, is_interactive=is_interactive)
+            cmd.execute_pretty(project.setup_cmd, project.name, directory=project.build_dir, is_interactive=is_interactive)
+        cmd.execute_pretty(project.build_cmd, project.name, directory=project.build_dir, is_interactive=is_interactive)
         if project.list_outputs_cmd:
             logging.info(f"Listing outputs", project_name=project.name)
-            cmd.execute_pretty(project.list_outputs_cmd, project.name, force_show_output=True, is_interactive=is_interactive)
+            cmd.execute_pretty(project.list_outputs_cmd, project.name, directory=project.build_dir, force_show_output=True, is_interactive=is_interactive)
     finally:
-        os.chdir("..")
+        # os.chdir("..")
+        pass
 
 @main.command()
 @click.option('-c', '--clean-build-first', default=False, is_flag=True, help="Clean the build directory before building")
@@ -133,12 +134,21 @@ def list():
 def deploy(firmware_name, monitor):
     """Deploy a firmware to a set of DotBots."""
     dotbot_project = load_project_config("dotbot")
+    swarmit_project = load_project_config("swarmit")
 
     # if needed, build dotbot and swarmit projects
-    if not cmd.execute(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir):
+    res, stdout, stderr = cmd.execute_and_output(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir)
+    # res = False
+    if not res:
         do_build("dotbot", clean_build_first=False, is_interactive=False)
+        res, stdout, stderr = cmd.execute_and_output(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir)
+        if not res:
+            raise RuntimeError("Failed to build dotbot project")
     if not os.path.exists("build/swarmit"):
         do_build("swarmit", clean_build_first=False, is_interactive=False)
+        res, stdout, stderr = cmd.execute(swarmit_project.list_outputs_cmd, directory=swarmit_project.build_dir)
+        if not res:
+            raise RuntimeError("Failed to build dotbot project")
 
     # use swarmit to check the available devices
     res, stdout, stderr = cmd.execute_and_output("swarmit status")
@@ -148,7 +158,7 @@ def deploy(firmware_name, monitor):
     # deploy the firmware to the devices using swarmit
     res = cmd.execute("swarmit stop") # make sure experiment is not running
     time.sleep(1)
-    res = cmd.execute_pretty(f"swarmit flash -y build/dotbot/swarmit/{firmware_name}/Output/dotbot-v2/Debug/Exe/swarmit_{firmware_name}-dotbot-v2.bin")
+    res = cmd.execute_pretty(f"swarmit flash -y $PWD/build/dotbot/{dotbot_project.output_dir}/*.bin")
     time.sleep(1)
     if not res:
         raise RuntimeError("Failed to deploy firmware to devices")
