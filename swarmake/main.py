@@ -53,7 +53,7 @@ def main(ctx):
     setup_logging("swarmake.log", log_level, ["console", "file"])
 
 
-def build(project_name, clean_build_first, is_interactive=False):
+def do_build(project_name, clean_build_first, is_interactive=False):
     """Build the specified project"""
 
     print("\n\n================================================================================")
@@ -84,8 +84,8 @@ def build(project_name, clean_build_first, is_interactive=False):
 @main.command()
 @click.option('-c', '--clean-build-first', default=False, is_flag=True, help="Clean the build directory before building")
 @click.argument("project_name")
-def build_command(project_name, clean_build_first):
-    return build(project_name, clean_build_first)
+def build(project_name, clean_build_first):
+    return do_build(project_name, clean_build_first)
 
 
 @main.command()
@@ -135,9 +135,9 @@ def deploy(firmware_name):
 
     # if needed, build dotbot and swarmit projects
     if not cmd.execute(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir):
-        build("dotbot", clean_build_first=False, is_interactive=False)
+        do_build("dotbot", clean_build_first=False, is_interactive=False)
     if not os.path.exists("build/swarmit"):
-        build("swarmit", clean_build_first=False, is_interactive=False)
+        do_build("swarmit", clean_build_first=False, is_interactive=False)
 
     # use swarmit to check the available devices
     res, stdout, stderr = cmd.execute_and_output("swarmit status")
