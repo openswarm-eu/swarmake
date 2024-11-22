@@ -8,13 +8,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-python-based:
     name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        target: [happyserial, swarmit]
+        target: [happyserial, swarmit, pydotbot, qrkey]
 
     steps:
       - name: Checkout code
@@ -24,6 +24,37 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .  # Install swarmake package
+
+      - name: Build ${{ matrix.target }}
+        run: |
+          BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
+
+  build-python-js-based:
+    name: Build ${{ matrix.target }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [dotbot-authority] # TODO: move pydotbot to this workflow
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Install dependencies
         run: |
