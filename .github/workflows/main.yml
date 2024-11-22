@@ -28,7 +28,7 @@ jobs:
 
       - name: Test swarmake
         run: |
-          swarmake --help
+          swarmake --version
 
   build-python-based:
     needs: install-swarmake

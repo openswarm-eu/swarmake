@@ -99,7 +99,6 @@ def execute_pretty(command, tag=None, force_show_output=False, is_interactive=Fa
 
             # If we're in interactive mode, we don't need to show stdout/stderr, it goes directly to the terminal.
             if is_interactive:
-
                 if process.returncode != 0:
                     logger.error(f"Command failed")
                     raise RuntimeError(f"Command failed {tag}")

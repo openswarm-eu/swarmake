@@ -44,6 +44,7 @@ def clean_build_dir(project_name=None):
         logging.info(f"Build directory does not exist", build_dir=build_dir)
 
 @click.group()
+@click.version_option(package_name="swarmake", message="%(prog)s v%(version)s    Fetch, build, and run the OpenSwarm.")
 @click.pass_context
 def main(ctx):
     log_level = "info"
@@ -54,8 +55,6 @@ def main(ctx):
 
 
 def do_build(project_name, clean_build_first, is_interactive=False):
-    """Build the specified project"""
-
     print("\n\n================================================================================")
     print("                                 BUILDING")
     print("================================================================================\n\n")
@@ -85,6 +84,7 @@ def do_build(project_name, clean_build_first, is_interactive=False):
 @click.option('-c', '--clean-build-first', default=False, is_flag=True, help="Clean the build directory before building")
 @click.argument("project_name")
 def build(project_name, clean_build_first):
+    """Build the specified project"""
     return do_build(project_name, clean_build_first)
 
 
@@ -128,8 +128,9 @@ def list():
     logging.info(f"Found {len(unconfigured_projects)} unconfigured projects:\n\n\t{unconfigured_project_names}\n\n")
 
 @main.command()
+@click.option('-m', '--monitor', default=False, is_flag=True, help="Tell swarmit to monitor the event logs right after the experiment starts")
 @click.argument("firmware_name")
-def deploy(firmware_name):
+def deploy(firmware_name, monitor):
     """Deploy a firmware to a set of DotBots."""
     dotbot_project = load_project_config("dotbot")
 
@@ -156,6 +157,8 @@ def deploy(firmware_name):
         logging.info("Firmware deployed and experiment started")
     else:
         raise RuntimeError("Failed to start the experiment")
+    if monitor:
+        cmd.execute_pretty("swarmit monitor", is_interactive=True)
 
 if __name__ == "__main__":
     main()
