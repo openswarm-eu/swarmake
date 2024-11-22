@@ -137,18 +137,14 @@ def deploy(firmware_name, monitor):
     swarmit_project = load_project_config("swarmit")
 
     # if needed, build dotbot and swarmit projects
-    res, stdout, stderr = cmd.execute_and_output(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir)
-    # res = False
+    res = cmd.execute(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir)
     if not res:
         do_build("dotbot", clean_build_first=False, is_interactive=False)
-        res, stdout, stderr = cmd.execute_and_output(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir)
+        res = cmd.execute(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir)
         if not res:
             raise RuntimeError("Failed to build dotbot project")
     if not os.path.exists("build/swarmit"):
         do_build("swarmit", clean_build_first=False, is_interactive=False)
-        res, stdout, stderr = cmd.execute(swarmit_project.list_outputs_cmd, directory=swarmit_project.build_dir)
-        if not res:
-            raise RuntimeError("Failed to build dotbot project")
 
     # use swarmit to check the available devices
     res, stdout, stderr = cmd.execute_and_output("swarmit status")
