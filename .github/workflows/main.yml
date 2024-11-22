@@ -1,4 +1,4 @@
-name: CI Workflow
+name: Main Action
 
 on:
   push:
@@ -8,13 +8,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  happyserial:
-    name: Install happyserial
+  build:
+    name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [happyserial, swarmit]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,17 +30,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .  # Install swarmake package
 
-      - name: Install happyserial
+      - name: Build ${{ matrix.target }}
         run: |
-          swarmake build happyserial
+          BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
 
-  aiot_play_fw:
-    name: Build aiot_play_fw
+  build-with-docker:
+    name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target: [dotbot, aiot_play_fw]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -51,28 +59,6 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
 
-      - name: Build aiot_play_fw
+      - name: Build ${{ matrix.target }}
         run: |
-          BUILD_CONFIG=debug swarmake build aiot_play_fw
-
-  swarmit:
-    name: Build swarmit
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .  # Install swarmake package
-
-      - name: Build swarmit
-        run: |
-          BUILD_CONFIG=debug swarmake build swarmit
+          BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
