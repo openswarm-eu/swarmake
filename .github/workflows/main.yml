@@ -1,4 +1,4 @@
-name: Main Action
+name: CI
 
 on:
   push:

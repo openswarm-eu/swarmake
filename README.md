@@ -1,4 +1,9 @@
-# OpenSwarm implementation
+# swarmake  &emsp;  [![CI status]][actions] [![Latest Version]][pypi]
+
+[CI status]: https://github.com/openswarm-eu/swarmake/workflows/Main%20Action/badge.svg
+[actions]: https://github.com/openswarm-eu/swarmake/actions/workflows/main.yml
+[Latest Version]: https://img.shields.io/pypi/v/swarmake?color=%2334D058&label=pypi%20package
+[pypi]: https://pypi.org/project/swarmake
 
 Fetch, build, and run the OpenSwarm.
 
