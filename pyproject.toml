@@ -27,7 +27,7 @@ exclude = [ "*.pyc" ]
 
 [project]
 name = "swarmake"
-version = "0.1.1"
+version = "0.1.3"
 authors = [
     { name="Geovane Fedrecheski", email="geovane.fedrecheski@inria.fr" },
 ]
