@@ -51,8 +51,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/openswarm-eu/openswarm"
-"Bug Tracker" = "https://github.com/openswarm-eu/openswarm/issues"
+"Homepage" = "https://github.com/openswarm-eu/swarmake"
+"Bug Tracker" = "https://github.com/openswarm-eu/swarmake/issues"
 
 [project.scripts]
 swarmake = "swarmake.main:main"

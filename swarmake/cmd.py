@@ -50,7 +50,7 @@ def execute_and_output(command, tag=None, directory=None):
         return False, "", ""
 
 
-def execute_pretty(command, tag=None, force_show_output=False, is_interactive=False):
+def execute_pretty(command, tag=None, directory=None, force_show_output=False, is_interactive=False):
     """
     Execute the specified command for the project, displaying a spinner and elapsed time.
 
@@ -66,6 +66,9 @@ def execute_pretty(command, tag=None, force_show_output=False, is_interactive=Fa
     is_ok = False
 
     if command:
+        if directory:
+            command = f"cd {directory} && {command}"
+
         # Log the command execution start
         logger.debug(f"Executing command: \n\n\t{command}\n\n")
 
