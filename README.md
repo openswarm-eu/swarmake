@@ -37,7 +37,7 @@ swarmake run lakers
 ## Deploy
 Deploy a Swarm of DotBots:
 ```bash
-swarmake deploy move --monitor
+TARGET_APP=move swarmake deploy --monitor
 ```
 
 The command above will:
