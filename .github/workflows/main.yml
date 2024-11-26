@@ -136,4 +136,8 @@ jobs:
 
       - name: Build ${{ matrix.target }}
         run: |
-          BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
+          if [ "${{ matrix.target }}" == "dotbot" ]; then
+            BUILD_CONFIG=debug TARGET_APP=move swarmake build ${{ matrix.target }}
+          else
+            BUILD_CONFIG=debug swarmake build ${{ matrix.target }}
+          fi
