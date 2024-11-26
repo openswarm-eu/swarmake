@@ -130,11 +130,9 @@ def list():
 
 @main.command()
 @click.option('-m', '--monitor', default=False, is_flag=True, help="Tell swarmit to monitor the event logs right after the experiment starts")
-@click.argument("firmware_name")
-def deploy(firmware_name, monitor):
+def deploy(monitor):
     """Deploy a firmware to a set of DotBots."""
     dotbot_project = load_project_config("dotbot")
-    swarmit_project = load_project_config("swarmit")
 
     # if needed, build dotbot and swarmit projects
     res = cmd.execute(dotbot_project.list_outputs_cmd, directory=dotbot_project.build_dir)
@@ -153,7 +151,10 @@ def deploy(firmware_name, monitor):
 
     # deploy the firmware to the devices using swarmit
     res = cmd.execute("swarmit stop") # make sure experiment is not running
-    time.sleep(1)
+    if not res:
+        logging.warning("Failed to stop the experiment")
+        return
+    time.sleep(2)
     res = cmd.execute_pretty(f"swarmit flash -y $PWD/build/dotbot/{dotbot_project.output_dir}/*.bin")
     time.sleep(1)
     if not res:
