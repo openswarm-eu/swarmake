@@ -21,7 +21,7 @@ swarmake build dotbot
 Build the Coaty Data Distribution Agent:
 ```bash
 # clone the repo and prepare the docker image
-swarmake build dotbot
+swarmake build dda
 ```
 
 ## Run
