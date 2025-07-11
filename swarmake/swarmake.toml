@@ -100,6 +100,23 @@ cd controller && cargo build
 """
 run = "cd controller && cargo run"
 
+[projects.poc2]
+repo = "singularity_poc2"
+setup = """
+# 1. install apptainer
+./install/install_apptainer.sh
+
+# 2. build the image
+./recipes/stable_from_apt_openswarm/build.sh
+
+# 3. copy the wrapper script
+cp example_wrapper.sh wrapper.sh
+chmod +x wrapper.sh
+
+# 4. run the apptainer container
+./wrapper.sh
+"""
+
 [_core]
 openswarm-url = "https://github.com/openswarm-eu"
 repositories = [
