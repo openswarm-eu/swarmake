@@ -126,7 +126,7 @@ def list():
     all_repos = config.core.repositories
     unconfigured_projects = set(all_repos) - set([p.repo_name for p in configured_projects])
     unconfigured_project_names = '\n\t'.join(unconfigured_projects)
-    logging.info(f"Found {len(unconfigured_projects)} unconfigured projects:\n\n\t{unconfigured_project_names}\n\n")
+    # logging.info(f"Found {len(unconfigured_projects)} unconfigured projects:\n\n\t{unconfigured_project_names}\n\n")
 
 @main.command()
 @click.option('-m', '--monitor', default=False, is_flag=True, help="Tell swarmit to monitor the event logs right after the experiment starts")
