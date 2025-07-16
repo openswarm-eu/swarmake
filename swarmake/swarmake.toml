@@ -100,6 +100,31 @@ cd controller && cargo build
 """
 run = "cd controller && cargo run"
 
+[projects.poc2]
+repo = "singularity_poc2"
+setup = """
+# 1. install apptainer
+./install/install_apptainer.sh
+
+# 2. build the image
+./recipes/stable_from_apt_openswarm/build.sh
+
+# 3. copy the wrapper script
+cp example_wrapper.sh wrapper.sh
+chmod +x wrapper.sh
+ls -l wrapper.sh
+
+# 4. show some help info
+echo "
+PoC 2 ready! To run the example, execute:
+./build/poc2/wrapper.sh
+
+Then, in the terminal that opens, execute:
+$ roscd mrs_uav_gazebo_simulation/tmux/one_drone
+./start.sh
+"
+"""
+
 [_core]
 openswarm-url = "https://github.com/openswarm-eu"
 repositories = [
