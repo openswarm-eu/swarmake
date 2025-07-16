@@ -5,49 +5,91 @@
 [Latest Version]: https://img.shields.io/pypi/v/swarmake?color=%2334D058&label=pypi%20package
 [pypi]: https://pypi.org/project/swarmake
 
-Fetch, build, and run the OpenSwarm.
+`swarmake` is a command-line tool for managing OpenSwarm components. It simplifies the process of fetching, building, and running various components of the OpenSwarm ecosystem, making it easier to work with robot swarms.
 
-For help, use `swarmake [command] --help`.
+## Features
 
-# Examples
+- 🔄 Automated build process for OpenSwarm components
+- 📥 Automatically downloads repositories from the OpenSwarm GitHub organization
+- 📡 Deployment tools with real-time monitoring of robot swarms
+- 🛠️ Extensible recipe system for custom components
 
-## Build
+## Installation
+
+Install `swarmake` using pip:
+
+```bash
+pip install swarmake
+```
+
+## Usage
+
+For help with any command, use:
+```bash
+swarmake [command] --help
+```
+
+### Building Components
+
 Build the DotBot firmware:
 ```bash
-# clone the dotbot repo and build it in Docker, using the recipe defined in swarmake.toml
+# Clone the dotbot repo and build it in Docker using the recipe in swarmake.toml
 swarmake build dotbot
 ```
 
 Build the Coaty Data Distribution Agent:
 ```bash
-# clone the repo and prepare the docker image
+# Clone the repo and prepare the docker image
 swarmake build dda
 ```
 
-## Run
+### Running Components
+
 Build and run the `lakers` library:
 ```bash
-# clone the lakers repo and build it using the recipe defined in swarmake.toml
-# when stderr is redirected, we suppress stdout too and just show a "loading" line
+# Build the lakers component
 swarmake build lakers 2> /dev/null
-# run according to swarmake.toml
+# Run according to swarmake.toml configuration
 swarmake run lakers
 ```
 
-## Deploy
-Deploy a Swarm of DotBots:
+### Deploying Swarms
+
+Deploy a swarm of DotBots with monitoring:
 ```bash
 TARGET_APP=move swarmake deploy --monitor
 ```
 
-The command above will:
-1. clone & build the dotbot and swarmit projects
-2. flash the firmware to one or more available dotbots
-3. start the experiment (i.e. run the firmware)
-4. keep monitoring logs sent from dotbots
+This command will:
+1. Clone & build the dotbot and swarmit projects
+2. Flash the firmware to available dotbots
+3. Start the experiment
+4. Monitor and display logs from the dotbots
 
-# Adding a component to swarmake
+## Adding New Components
 
-1. Open the `swarmake.toml` file
-2. Add a new project, and make sure it has a matching URL in the list _core.repositories
-3. Add recipes for `setup`, and optionally also for `run` and `deploy`
+To add a new component to swarmake:
+1. Open the `swarmake.toml` configuration file
+2. Add your project with its repository URL in the `_core.repositories` section
+3. Define recipes for:
+   - `build` (optional): Build and setup instructions
+   - `run` (optional): Commands to run the component
+   - `repo` (optional): Override the repository name (uses project name by default)
+   - `list-outputs` (optional): Command to list build outputs
+
+Example configuration:
+```toml
+[project.mycomponent]
+build = """
+pip install mycomponent
+"""
+run = "./run-my-component.sh"
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
