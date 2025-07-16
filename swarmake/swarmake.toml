@@ -100,6 +100,11 @@ cd controller && cargo build
 """
 run = "cd controller && cargo run"
 
+[projects.poc1]
+setup = """
+echo "PoC 1 integration is TO-DO"
+"""
+
 [projects.poc2]
 repo = "singularity_poc2"
 setup = """
@@ -123,6 +128,21 @@ Then, in the terminal that opens, execute:
 $ roscd mrs_uav_gazebo_simulation/tmux/one_drone
 ./start.sh
 "
+"""
+
+[projects.poc3]
+setup = """
+echo "PoC 3 integration is TO-DO"
+"""
+
+[projects.poc4]
+setup = """
+echo "PoC 4 integration is TO-DO"
+"""
+
+[projects.poc5]
+setup = """
+echo "PoC 5 integration is TO-DO"
 """
 
 [_core]
