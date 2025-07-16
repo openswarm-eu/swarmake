@@ -45,3 +45,9 @@ The command above will:
 2. flash the firmware to one or more available dotbots
 3. start the experiment (i.e. run the firmware)
 4. keep monitoring logs sent from dotbots
+
+# Adding a component to swarmake
+
+1. Open the `swarmake.toml` file
+2. Add a new project, and make sure it has a matching URL in the list _core.repositories
+3. Add recipes for `setup`, and optionally also for `run` and `deploy`
